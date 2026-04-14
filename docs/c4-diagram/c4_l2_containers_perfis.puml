@@ -1,0 +1,66 @@
+@startuml c4_l2_containers_perfis
+!include <C4/C4_Container>
+
+title OKR Driven Execution — C4 Nível 2: Containers & Fluxos Funcionais
+
+' ─── Atores ────────────────────────────────────────────────────────────────
+
+Person(admin, "Admin", "Cria OKRs de org,\ngoverna ciclos (RF-01-02).")
+Person(manager, "Manager", "Cria OKRs de time,\nacompanha (RF-01-06).")
+Person(colaborador, "Colaborador", "Registra check-ins,\ncontesta (RF-04-06).")
+
+' ─── Frontend ────────────────────────────────────────────────────────────────
+
+System_Boundary(client, "Cliente") {
+    Container(frontend, "Frontend", "Next.js / TypeScript", "Dashboards (RF-07-08), formulários\n(OKR, check-in), timelines, alertas,\nauditoria imutável (RF-12).")
+}
+
+' ─── Backend ────────────────────────────────────────────────────────────────
+
+System_Boundary(backend, "OKR Driven - Backend") {
+
+    ' ─── WRITE PATH (Comandos → Eventos) ───────────────────────────────────
+    Container(api, "API", ".NET / C#", "Processa comandos escritos:\nCreateOKR (RF-01), SubmitCheckIn (RF-04),\nCloseCycle (RF-09), ContestCheckIn (RF-06).\nAplica regras de negócio e publica eventos.")
+
+    Container(eventHandler, "Event Handlers", ".NET / C#", "Consome eventos: projecta dados,\natualiza alertas (RF-05) e detecta\nKRs em risco (RF-04-06).")
+
+    ContainerDb(postgres, "Event Store", "PostgreSQL", "Event Sourcing: eventos + snapshots.\nFonte de verdade imutável.\nAuditoria de todas as mudanças (RF-12).")
+
+    Container(broker, "Message Broker", "RabbitMQ", "Desacopla escrita de leitura.\nDistribui eventos para projeções.")
+
+    ' ─── READ PATH (Queries → Projeções) ───────────────────────────────────
+    ContainerDb(mongo, "Read Models", "MongoDB", "Projeções desnormalizadas:\nOKRs, check-ins, alertas, status de KR,\nauditoria, relatórios de ciclo (RF-09-10).\nOtimizadas para leitura do frontend.")
+
+    Container(scheduler, "Job Scheduler", "Hangfire", "Tarefas agendadas: verificar\ncheck-ins atrasados (RF-05),\nauditoria periódica (RF-12).")
+}
+
+' ─── Relações: Atores → Frontend ──────────────────────────────────────────
+
+Rel(admin, frontend, "Governa OKRs & ciclos", "HTTPS/JWT")
+Rel(manager, frontend, "Cria OKRs, acompanha", "HTTPS/JWT")
+Rel(colaborador, frontend, "Registra progresso", "HTTPS/JWT")
+
+' ─── Relações: Frontend → Backend (WRITE) ────────────────────────────────────
+
+Rel_R(frontend, api, "Comanda (POST): OKR CRUD (RF-01-03),\nCheck-in (RF-04-06), Ciclo (RF-09-10).", "REST/JSON")
+
+' ─── Relações: Frontend → Backend (READ) ──────────────────────────────────────
+
+Rel_L(frontend, mongo, "Queries (GET): OKRs, check-ins,\nalertas, dashboards, auditoria.", "REST/JSON")
+
+' ─── Relações: WRITE PATH ──────────────────────────────────────────────────
+
+Rel(api, postgres, "1. Persiste evento de comando", "SQL")
+Rel_U(api, broker, "2. Publica evento para handlers", "AMQP")
+
+' ─── Relações: EVENT PROCESSING (Async) ────────────────────────────────────
+
+Rel_D(broker, eventHandler, "Consome evento", "AMQP")
+Rel(eventHandler, postgres, "Valida contra histórico", "SQL")
+Rel_R(eventHandler, mongo, "Atualiza projeção (OKR, alertas, auditoria)", "Driver/.NET")
+
+' ─── Relações: SCHEDULED MONITORING ────────────────────────────────────────
+
+Rel_U(scheduler, api, "Dispara check-in overdue check", "HTTP/gRPC")
+
+@enduml
