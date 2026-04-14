@@ -4,16 +4,26 @@ Organizações modernas adotam OKRs como modelo de gestão estratégica, mas fal
 
 ## 2. A Solução: OKR Driven
 
-Plataforma de gestão estratégica baseada em ciclos **trimestrais**. A hierarquia segue:
+OKR Driven é uma plataforma de gestão estratégica orientada por ciclos **trimestrais**, com governança clara e execução contínua. Em vez de tratar OKR como um documento estático, a solução transforma cada objetivo em um fluxo operacional com dono, progresso, status e histórico auditável.
 
-**OKRs Anuais** (Admin define) → **OKRs Trimestrais da Organização** (Admin define; KRs = metas por time) → **OKRs Trimestrais do Time** (Manager cria; contribui aos KRs da org) → **Key Results do Time** (Colaborador executa)
+O encadeamento é direto e sem ambiguidade:
 
-**Pilares:**
-- Clareza: OKRs estruturados sem ambiguidade
-- Visibilidade: Rastreamento de organização > time > indivíduo
-- Accountability: Cada time entende qual KR organizacional contribui
-- Transparência: Check-ins periódicos que rastreiam progresso
-- Rastreabilidade: Auditoria imutável de todas as mudanças
+**OKRs Anuais** (Admin define) → **OKRs Trimestrais da Organização** (Admin define e distribui metas por time) → **OKRs Trimestrais do Time** (Manager detalha a execução) → **Key Results do Time** (Colaborador executa e atualiza)
+
+Na prática, o ciclo funciona em quatro momentos:
+- Planejamento: definição dos OKRs anuais e desdobramento para o trimestre, com vínculo explícito entre meta organizacional e entrega de time.
+- Execução: o time atualiza progresso por check-ins, registra contexto de avanço ou regressão e mantém visibilidade do status real.
+- Acompanhamento: gestores e liderança acompanham dashboards com indicadores de saúde do ciclo (On-track, At-risk, Off-track) e priorizam intervenção.
+- Encerramento: ao final do período, o resultado é consolidado com classificação objetiva e geração de insumos para aprendizado do próximo ciclo.
+
+Além do acompanhamento de metas, a plataforma resolve problemas clássicos de operação de OKRs:
+- Falta de clareza: cada KR nasce com responsável, período e critério de avaliação.
+- Falta de contexto: toda atualização pode carregar comentário e justificativa, evitando leitura apenas numérica.
+- Falta de responsabilidade: cada nível sabe exatamente para qual meta superior contribui.
+- Falta de transparência: evolução e risco ficam visíveis para liderança, gestão e execução.
+- Falta de memória organizacional: a trilha de auditoria preserva decisões, mudanças e resultados sem perda de histórico.
+
+Com isso, a OKR Driven posiciona o OKR como rotina de gestão, não como cerimônia. O foco deixa de ser somente "definir metas" e passa a ser "entregar resultado com previsibilidade", conectando estratégia, execução e aprendizado contínuo no mesmo ambiente.
 
 ## 2. REQUISITOS FUNCIONAIS (RF)
 
