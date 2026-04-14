@@ -87,13 +87,13 @@ MongoDB armazena projeções desnormalizadas otimizadas para consultas rápidas:
 
 **Terraform:** Define infraestrutura como código, permitindo deploy reproduzível em qualquer cloud (AWS, Azure, GCP). Versionado junto ao código, facilita rollback e auditoria de mudanças.
 
-### 5.6 Qualidade e Monitoramento: Serilog, SonarQube
+### 5.6 Qualidade e Monitoramento: Serilog, SonarQube e NewRelic
 
 **Serilog:** Logging estruturado e centralizado. Essencial para auditoria (RF-12) e debugging em produção.
 
 **SonarQube:** Análise estática contínua de qualidade de código, identificação de code smells, bugs e vulnerabilidades de segurança.
 
-**New Relic:** Monitoramento de performance e observabilidade em tempo real. Rastreamento de transações, erros e saúde geral da aplicação.
+**NewRelic:** Monitoramento de performance e observabilidade em tempo real. Rastreamento de transações, erros e saúde geral da aplicação.
 
 ## 6. Diagramas de Arquitetura - Modelo C4
 
