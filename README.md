@@ -106,12 +106,14 @@ Executa verificações periódicas (e.g., check-ins atrasados — RF-05), tarefa
 
 ## 5. Diagramas de Arquitetura - Modelo C4
 
-### Nível 1: Contexto do Sistema
-Visão de alto nível dos atores e sistemas externos que interagem com OKR Driven.
+<p align="center"><strong>Nível 1: Contexto do Sistema</strong></p>
+<p align="center">Visão de alto nível dos atores e sistemas externos que interagem com OKR Driven.</p>
+<p align="center">
+	<img src="docs/c4-diagram/.png/c4_l1_contexto_perfis.png" alt="Diagrama C4 - Nível 1 (Contexto)" />
+</p>
 
-![Diagrama C4 - Nível 1 (Contexto)](docs/c4-diagram/.png/c4_l1_contexto_perfis.png)
-
-### Nível 2: Containers (Componentes Principais)
-Decomposição da solução em containers: Frontend (Next.js), Backend (ASP.NET Core), Bancos de Dados (PostgreSQL, MongoDB), Message Queue (RabbitMQ) e serviços auxiliares.
-
-![Diagrama C4 - Nível 2 (Containers)](docs/c4-diagram/.png/c4_l2_containers_perfis.png)
+<p align="center"><strong>Nível 2: Containers (Componentes Principais)</strong></p>
+<p align="center">Decomposição da solução em containers: Frontend (Next.js), Backend (ASP.NET Core), Bancos de Dados (PostgreSQL, MongoDB), Message Queue (RabbitMQ) e serviços auxiliares.</p>
+<p align="center">
+	<img src="docs/c4-diagram/.png/c4_l2_containers_perfis.png" alt="Diagrama C4 - Nível 2 (Containers)" />
+</p>
