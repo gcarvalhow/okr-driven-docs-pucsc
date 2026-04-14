@@ -4,18 +4,16 @@ Organizações modernas adotam OKRs como modelo de gestão estratégica, mas fal
 
 ## 2. A Solução: OKR Driven
 
-Plataforma de gestão estratégica baseada em ciclos **trimestrais**. Hierarquia de OKRs:
-- **OKRs Anuais** (Admin define para organização)
-  - **OKRs Trimestrais da Organização** (Admin define; KRs = metas por time)
-    - **OKRs Trimestrais do Time** (Manager cria; contribui aos KRs da org)
-      - **Key Results do Time** (Colaborador executa)
+Plataforma de gestão estratégica baseada em ciclos **trimestrais**. A hierarquia segue:
 
-Foco em:
-1. Clareza: OKRs estruturados, sem ambiguidade
-2. Visibilidade: Hierarquia clara organização > time > indivíduo
-3. Accountability: Cada time sabe qual KR organizacional contribui
-4. Transparência: Check-ins periódicos do progresso
-5. Rastreabilidade: Auditoria imutável de todas as mudanças
+**OKRs Anuais** (Admin define) → **OKRs Trimestrais da Organização** (Admin define; KRs = metas por time) → **OKRs Trimestrais do Time** (Manager cria; contribui aos KRs da org) → **Key Results do Time** (Colaborador executa)
+
+**Pilares:**
+- Clareza: OKRs estruturados sem ambiguidade
+- Visibilidade: Rastreamento de organização > time > indivíduo
+- Accountability: Cada time entende qual KR organizacional contribui
+- Transparência: Check-ins periódicos que rastreiam progresso
+- Rastreabilidade: Auditoria imutável de todas as mudanças
 
 ## 2. REQUISITOS FUNCIONAIS (RF)
 
@@ -95,23 +93,6 @@ Executa verificações periódicas (e.g., check-ins atrasados — RF-05), tarefa
 **Serilog:** Logging estruturado e centralizado. Essencial para auditoria (RF-12) e debugging em produção.
 
 **SonarQube:** Análise estática contínua de qualidade de código, identificação de code smells, bugs e vulnerabilidades de segurança.
-
-### 4.9 Justificativa: Padrões Arquiteturais
-
-**Event Sourcing + CQRS:**
-- **Por quê:** OKR Driven exige auditoria imutável (RF-12) de todas as mudanças (criação, edição, check-in, contestação, encerramento). Event Sourcing garante que cada mudança fica registrada como um evento imutável no PostgreSQL.
-- **Como:** API recebe comando (e.g., `SubmitCheckIn`), valida, gera evento (`CheckInSubmitted`), persiste no Event Store. Handlers consomem o evento e atualizam projeções no MongoDB.
-- **Benefício:** Rastreabilidade completa, recuperação de estado em qualquer ponto no tempo, auditoria sem soft-deletes, conformidade regulatória.
-
-**Event Driven Architecture (RabbitMQ):**
-- **Por quê:** Processamento de alertas (RF-05), relatórios (RF-09), e auditoria (RF-12) não pode bloquear o check-in do usuário (RNF-01: check-in < 2s). Check-in deve salvar rápido.
-- **Como:** Após persistir evento no PostgreSQL, API publica no RabbitMQ. Handlers assincronamente consomem (Alert Handler detecta KR em risco, Report Handler gera relatórios, Audit Handler registra).
-- **Benefício:** Latência reduzida para o usuário, processamento resiliente em background, escalabilidade independente de cada handler.
-
-**Hierarquia RBAC (Admin, Manager, Colaborador):**
-- **Por quê:** RF-11 exige controle de acesso por papel. Admin governa ciclos org (RF-01), Manager cria OKRs time (RF-01), Colaborador executa (RF-04-06).
-- **Como:** JWT com claims de role. API valida permissão antes de executar comando.
-- **Benefício:** Separação clara de responsabilidades, segurança em camadas, conformidade com princípios de least privilege.
 
 ## 5. Diagramas de Arquitetura - Modelo C4
 
