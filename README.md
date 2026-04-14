@@ -81,30 +81,19 @@ PostgreSQL é o banco de escrita canônico. Armazena eventos imutáveis e snapsh
 **MongoDB — Projeções e Read Models:**
 MongoDB armazena projeções desnormalizadas otimizadas para consultas rápidas: OKRs, Check-ins, Alertas, Status de KRs, Relatórios. Event Handlers consomem eventos do PostgreSQL e atualizam projeções no MongoDB assincronamente (padrão CQRS). Resultado: queries rápidas para o dashboard (RNF-01).
 
-### 5.5 Message Queue: RabbitMQ
-
-RabbitMQ desacopla o processamento de eventos da escrita de comandos. Após um evento ser persistido no PostgreSQL, a API publica no RabbitMQ. Handlers (Alert Handler, Report Handler, Audit Handler) consomem assincronamente:
-- **Alert Handler:** Detecta KRs em risco (RF-05) e atualiza status visual.
-- **Report Handler:** Gera relatórios de ciclo (RF-09-10).
-- **Audit Handler:** Registra todas as mudanças imutavelmente (RF-12).
-
-Resultado: usuário não espera por processamento pesado; resiliência aumenta; cada handler escala independentemente.
-
-### 5.6 Agendamento de Tarefas: Hangfire
-
-Executa verificações periódicas (e.g., check-ins atrasados — RF-05), tarefas de manutenção, reconciliação entre Event Store e Read Models. Integrado ao .NET, oferece interface web para monitoramento.
-
-### 5.7 Infraestrutura: Docker + Terraform
+### 5.5 Infraestrutura: Docker + Terraform
 
 **Docker:** Containeriza toda a stack (API .NET, Next.js, PostgreSQL, MongoDB, RabbitMQ) para ambiente homogêneo. Facilita desenvolvimento local e deploy idêntico em qualquer environment.
 
 **Terraform:** Define infraestrutura como código, permitindo deploy reproduzível em qualquer cloud (AWS, Azure, GCP). Versionado junto ao código, facilita rollback e auditoria de mudanças.
 
-### 5.8 Qualidade e Monitoramento: Serilog, SonarQube
+### 5.6 Qualidade e Monitoramento: Serilog, SonarQube
 
 **Serilog:** Logging estruturado e centralizado. Essencial para auditoria (RF-12) e debugging em produção.
 
 **SonarQube:** Análise estática contínua de qualidade de código, identificação de code smells, bugs e vulnerabilidades de segurança.
+
+**New Relic:** Monitoramento de performance e observabilidade em tempo real. Rastreamento de transações, erros e saúde geral da aplicação.
 
 ## 6. Diagramas de Arquitetura - Modelo C4
 
