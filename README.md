@@ -1,5 +1,7 @@
 # OKR Driven
 
+## 1. O Problema
+
 Organizações modernas adotam OKRs como modelo de gestão estratégica, mas falham na execução. Definem objetivos vagos, não acompanham o progresso com disciplina, não dão visibilidade clara sobre o andamento das metas e não deixam explícito quem é responsável por cada entrega. Ao final do ciclo, quase não há análise para entender erros e acertos. O resultado é previsível: a metodologia vira discurso e o planejamento estratégico perde força.
 
 ## 2. A Solução: OKR Driven
@@ -25,29 +27,29 @@ Além do acompanhamento de metas, a plataforma resolve problemas clássicos de o
 
 Com isso, a OKR Driven posiciona o OKR como rotina de gestão, não como cerimônia. O foco deixa de ser somente "definir metas" e passa a ser "entregar resultado com previsibilidade", conectando estratégia, execução e aprendizado contínuo no mesmo ambiente.
 
-## 2. REQUISITOS FUNCIONAIS (RF)
+## 3. REQUISITOS FUNCIONAIS (RF)
 
-### 2.1 Gestão de OKRs
+### 3.1 Gestão de OKRs
 - RF-01: Criar OKRs Anuais e OKRs Trimestrais da Organização (Admin); OKRs Trimestrais do Time (Manager do time)
 - RF-02: Editar OKRs em fase Planning (bloqueado após ciclo trimestral ativo)
 - RF-03: Listar OKRs com hierarquia (anuais, trimestrais org, trimestrais time; filtro por período e responsável)
 
-### 2.2 Rastreamento de Progresso
+### 3.2 Rastreamento de Progresso
 - RF-04: Check-ins trimestrais: Manager registra % de progresso, Colaborador comenta/contesta (mandatory se regressou)
 - RF-05: Timeline visual com 3 status (On-track / At-risk / Off-track)
 
-### 2.3 Dashboard e Transparência
+### 3.3 Dashboard e Transparência
 - RF-07: Dashboard executivo (3 cards: On-track, At-risk, Off-track; filtro por período trimestral ativo)
 - RF-08: Vista por Responsável (meus OKRs do time + contexto qual KR org contribuo; status visual; link para comentar)
 
-### 2.4 Ciclo Encerrado
+### 3.4 Ciclo Encerrado
 - RF-09: Finalizar OKR ciclo (Admin registra % final; status automático: ≥80% Achieved, ≥50% Partial, <50% Failed)
 
-### 2.5 Segurança e Controle
+### 3.5 Segurança e Controle
 - RF-11: Controle de acesso (Admin gerencia org; Manager gerencia time; Colaborador executa)
 - RF-12: Auditoria imutável (criação, edição, check-in, contestação, encerramento)
 
-## 3. REQUISITOS NÃO-FUNCIONAIS (RNF)
+## 4. REQUISITOS NÃO-FUNCIONAIS (RNF)
 
 - RNF-01: Performance - Dashboard carrega < 3s, Check-in salva < 2s
 - RNF-02: Usabilidade - Interface clara, fluxo check-in < 5 minutos
@@ -55,23 +57,23 @@ Com isso, a OKR Driven posiciona o OKR como rotina de gestão, não como cerimô
 - RNF-04: Manutenibilidade - Código documentado, testes para handlers críticos
 - RNF-05: Conformidade - Log de auditoria (criação, edição, check-in, encerramento ciclo)
 
-## 4. TECNOLOGIAS E JUSTIFICATIVAS
+## 5. TECNOLOGIAS E JUSTIFICATIVAS
 
-### 4.1 Frontend: Next.js + TypeScript
+### 5.1 Frontend: Next.js + TypeScript
 
 Next.js oferece Server-Side Rendering (SSR) para performance otimizada do dashboard executivo (RNF-01: carrega < 3s), roteamento integrado, deploy facilitado em plataformas modernas. TypeScript garante tipagem estática em componentes críticos, reduzindo bugs em tempo de desenvolvimento.
 
-### 4.2 Backend: C# / .NET 8 + ASP.NET Core
+### 5.2 Backend: C# / .NET 8 + ASP.NET Core
 
 .NET/C# é a base da arquitetura backend. Oferece robustez, escalabilidade e um ecossistema rico para padrões enterprise como DDD (Domain-Driven Design), CQRS (Command Query Responsibility Segregation) e Event-Driven Architecture. A escolha de .NET 8 garante performance de alta classe e suporte a padrões modernos de arquitetura.
 
-### 4.3 Arquitetura: DDD, CQRS, Event-Driven Architecture
+### 5.3 Arquitetura: DDD, CQRS, Event-Driven Architecture
 
 - **Domain-Driven Design (DDD):** Estrutura o domínio de OKRs, Check-ins e Ciclos com linguagem ubíqua. Agregados garantem consistência das regras de negócio (ex: OKRs não podem ser editados após ciclo ativo — RF-02).
 - **CQRS:** Separa caminho de escrita (comandos) do caminho de leitura (queries). Escrita persiste eventos no PostgreSQL; leitura consulta projeções otimizadas no MongoDB. Essa separação permite que o dashboard carregue rapidamente sem impacto de transações de escrita.
 - **Event-Driven Architecture:** Alertas, relatórios e auditoria são processados assincronamente via RabbitMQ. Não bloqueiam o check-in do usuário (RNF-01: check-in < 2s).
 
-### 4.4 Banco de Dados: PostgreSQL (Escrita) + MongoDB (Leitura)
+### 5.4 Banco de Dados: PostgreSQL (Escrita) + MongoDB (Leitura)
 
 **PostgreSQL — Event Store:**
 PostgreSQL é o banco de escrita canônico. Armazena eventos imutáveis e snapshots usando Event Sourcing. Garantia ACID garante integridade total das mudanças. Cada evento registrado é a fonte definitiva para auditoria (RF-12), sem necessidade de soft-deletes.
@@ -79,7 +81,7 @@ PostgreSQL é o banco de escrita canônico. Armazena eventos imutáveis e snapsh
 **MongoDB — Projeções e Read Models:**
 MongoDB armazena projeções desnormalizadas otimizadas para consultas rápidas: OKRs, Check-ins, Alertas, Status de KRs, Relatórios. Event Handlers consomem eventos do PostgreSQL e atualizam projeções no MongoDB assincronamente (padrão CQRS). Resultado: queries rápidas para o dashboard (RNF-01).
 
-### 4.5 Message Queue: RabbitMQ
+### 5.5 Message Queue: RabbitMQ
 
 RabbitMQ desacopla o processamento de eventos da escrita de comandos. Após um evento ser persistido no PostgreSQL, a API publica no RabbitMQ. Handlers (Alert Handler, Report Handler, Audit Handler) consomem assincronamente:
 - **Alert Handler:** Detecta KRs em risco (RF-05) e atualiza status visual.
@@ -88,23 +90,23 @@ RabbitMQ desacopla o processamento de eventos da escrita de comandos. Após um e
 
 Resultado: usuário não espera por processamento pesado; resiliência aumenta; cada handler escala independentemente.
 
-### 4.6 Agendamento de Tarefas: Hangfire
+### 5.6 Agendamento de Tarefas: Hangfire
 
 Executa verificações periódicas (e.g., check-ins atrasados — RF-05), tarefas de manutenção, reconciliação entre Event Store e Read Models. Integrado ao .NET, oferece interface web para monitoramento.
 
-### 4.7 Infraestrutura: Docker + Terraform
+### 5.7 Infraestrutura: Docker + Terraform
 
 **Docker:** Containeriza toda a stack (API .NET, Next.js, PostgreSQL, MongoDB, RabbitMQ) para ambiente homogêneo. Facilita desenvolvimento local e deploy idêntico em qualquer environment.
 
 **Terraform:** Define infraestrutura como código, permitindo deploy reproduzível em qualquer cloud (AWS, Azure, GCP). Versionado junto ao código, facilita rollback e auditoria de mudanças.
 
-### 4.8 Qualidade e Monitoramento: Serilog, SonarQube
+### 5.8 Qualidade e Monitoramento: Serilog, SonarQube
 
 **Serilog:** Logging estruturado e centralizado. Essencial para auditoria (RF-12) e debugging em produção.
 
 **SonarQube:** Análise estática contínua de qualidade de código, identificação de code smells, bugs e vulnerabilidades de segurança.
 
-## 5. Diagramas de Arquitetura - Modelo C4
+## 6. Diagramas de Arquitetura - Modelo C4
 
 <p align="center"><strong>Nível 1: Contexto do Sistema</strong></p>
 <p align="center">Visão de alto nível dos atores e sistemas externos que interagem com OKR Driven.</p>
